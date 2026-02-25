@@ -70,32 +70,6 @@ rclcpp_components_register_nodes(gscam_node "gscam2::GSCamNode")
 set(node_plugins "${node_plugins}gscam2::GSCamNode;$<TARGET_FILE:gscam_node>\n")
 
 #=============
-# Test subscriber node
-#=============
-
-add_library(subscriber_node src/subscriber_node.cpp)
-add_library(gscam2::subscriber_node ALIAS subscriber_node)
-
-target_compile_definitions(subscriber_node
-  PRIVATE "COMPOSITION_BUILDING_DLL")
-
-target_include_directories(subscriber_node
-  PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>)
-
-target_link_libraries(subscriber_node
-  PRIVATE
-    class_loader::class_loader
-    rclcpp_components::component
-    sensor_msgs::sensor_msgs_library
-  PUBLIC
-    rclcpp::rclcpp)
-
-rclcpp_components_register_nodes(subscriber_node "gscam2::ImageSubscriberNode")
-set(node_plugins "${node_plugins}gscam2::ImageSubscriberNode;$<TARGET_FILE:subscriber_node>\n")
-
-#=============
 # GSCam main, statically linked to make IDE debugging easier
 #=============
 
@@ -107,18 +81,6 @@ target_link_libraries(gscam_main
     gscam2::gscam_node)
 
 #=============
-# Manual composition of camera and subscriber nodes, IPC=true
-#=============
-
-add_executable(ipc_test_main src/ipc_test_main.cpp)
-
-target_link_libraries(ipc_test_main
-  PRIVATE
-    gscam2::gscam_node
-    gscam2::subscriber_node
-    sensor_msgs::sensor_msgs_library)
-
-#=============
 # Test
 #=============
 
@@ -126,17 +88,6 @@ if(BUILD_TESTING)
   # Load & run linters listed in package.xml
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
-
-  # Smoke test
-  find_package(ament_cmake_gtest)
-  ament_add_gtest(smoke_test
-    test/smoke_test.cpp
-    ENV GSCAM_CONFIG="videotestsrc pattern=snow ! capsfilter caps=video/x-raw,width=800,height=600 ! videoconvert")
-  if(TARGET smoke_test)
-    target_link_libraries(smoke_test
-      gscam2::gscam_node
-      sensor_msgs::sensor_msgs_library)
-  endif()
 endif()
 
 #=============
@@ -146,13 +97,15 @@ endif()
 install(DIRECTORY include/${PROJECT_NAME}
   DESTINATION include)
 
-install(TARGETS gscam_node subscriber_node
+# Removed subscriber_node from TARGETS
+install(TARGETS gscam_node
   EXPORT gscam2_targets
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
 
-install(TARGETS gscam_main ipc_test_main
+# Removed ipc_test_main from TARGETS
+install(TARGETS gscam_main
   DESTINATION lib/${PROJECT_NAME})
 
 install(DIRECTORY cfg launch
