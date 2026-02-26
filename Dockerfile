@@ -1,27 +1,3 @@
-# Terminal 1:
-#     docker build --pull --no-cache --build-arg TARGET_ROS_DISTRO=humble --tag gscam2:humble .
-#     docker run -it --rm --net=host --privileged \
-  # -v $(pwd)/launch/launch.py:/launch/launch.py \
-  # -e RMW_IMPLEMENTATION=rmw_cyclonedds_cpp \
-  # gscam2:humble \
-  # /bin/bash -c "source install/setup.bash && ros2 launch /launch/launch.py"
-
-
-# Terminal 2:
-#   This method verifies the stream inside the container
-#     docker container ls     # Get <container_name>
-#     docker exec -it <container_name> /bin/bash
-#     source /opt/ros/humble/setup.bash
-#     ros2 topic list
-#     ros2 topic hz /image_raw
-#     Use rviz or rqt_image_view to view the image
-#   This method verfies the stream in the host machine
-#     export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
-    ###### export CYCLONEDDS_URI="<CycloneDDS><Domain><General><NetworkInterface>lo</NetworkInterface></General></Domain></CycloneDDS>"
-#     ros2 topic list
-#     ros2 topic hz /image_raw
-#     Use rviz or rqt_image_view to view the image
-
 ARG TARGET_ROS_DISTRO
 ARG IP_ADDRESS
 
