@@ -13,21 +13,12 @@ jobs:
       fail-fast: false
 
       matrix:
-        ros_distribution: [humble, jazzy, kilted]
+        ros_distribution: [humble]
 
         include:
           - ros_distribution: humble
             docker_image: rostooling/setup-ros-docker:ubuntu-jammy-ros-humble-ros-base-latest
             fix_libunwind: true
-
-          - ros_distribution: jazzy
-            docker_image: rostooling/setup-ros-docker:ubuntu-noble-ros-jazzy-ros-base-latest
-            fix_libunwind: false
-
-          - ros_distribution: kilted
-            docker_image: rostooling/setup-ros-docker:ubuntu-noble-ros-kilted-ros-base-latest
-            fix_libunwind: false
-
     container:
       image: ${{ matrix.docker_image }}
 
@@ -49,3 +40,13 @@ jobs:
         with:
           package-name: gscam2
           target-ros2-distro: ${{ matrix.ros_distribution }}
+        
+      - name: Install GStreamer
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libgstreamer1.0-dev \
+            libgstreamer-plugins-base1.0-dev \
+            libgstreamer-plugins-good1.0-dev \
+            gstreamer1.0-plugins-good
+  

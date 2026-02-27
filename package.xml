@@ -50,6 +50,9 @@
     <depend>rclcpp_components</depend>
     <depend>rclpy</depend>
     <depend>sensor_msgs</depend>
+    <depend>gstreamer1.0</depend>
+    <depend>launch_ros</depend>
+    <depend>sensor_msgs</depend>
 
     <export>
         <build_type>ament_cmake</build_type>
